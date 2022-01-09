@@ -1,39 +1,105 @@
 <div class="container">
   <div class="row">
+    <br>
+
     <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
-      <!-- Add a Form with the following Inputs (and Validators)
-           1) Mail address (should not be empty and should be an email address)
-           2) A Dropdown which allows the user to select from three different Subscriptions ("Basic", "Advanced", "Pro")
-              Set "Advanced" as Default
-           3) A Password field (should not be empty)
-           4) A Submit Button
+      <form
+        #subscriptionForm="ngForm"
+        (ngSubmit)="onFormSubmit()"
+      >
+        <fieldset [disabled]="!!submittedValues">
+          <div
+            class="form-group"
+            [ngClass]="{'has-error': showError(email)}"
+          >
+            <label for="email">Email</label>
+            <input
+              id="email"
+              class="form-control"
+              ngModel
+              [name]="FieldName.EMAIL"
+              required
+              email
+              placeholder="Please, enter a valid email address"
+              #email="ngModel"
+            >
+            <span
+              class="error-message help-block"
+              *ngIf="showError(email)"
+            >
+              Please, enter a valid email address
+            </span>
+          </div>
 
-           Display a warning message if the Form is invalid AND was touched. Display a warning message below each input if it's invalid.
+          <div class="form-group">
+            <label for="subscription">Select subscription</label>
+            <select
+              id="subscription"
+              class="form-control"
+              [ngModel]="Subscription.ADVANCED"
+              [name]="FieldName.SUBSCRIPTION"
+            >
+              <option
+                *ngFor="let subscription of subscriptions"
+                [value]="subscription"
+              >
+                {{ subscription }}
+              </option>
+            </select>
+          </div>
 
-           Upon submitting the form, you should simply print the Value of the Form to the Console.
-           Optionally, display it in your template.
-      -->
+          <div
+            class="form-group"
+            [ngClass]="{'has-error': showError(password)}"
+          >
+            <label for="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              class="form-control"
+              ngModel
+              [name]="FieldName.PASSWORD"
+              required
+              placeholder="Create a new password for the subscription"
+              #password="ngModel"
+            >
+            <span
+              class="help-block"
+              *ngIf="showError(password)"
+            >
+              Please, enter any complexity password!
+            </span>
+          </div>
 
-      <form #subscriptionForm="ngForm">
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input id="email" type="text" class="form-control" placeholder="Plase, enter your email address" ngModel name="email">
-        </div>
-
-        <div class="form-group">
-          <label for="subscription">Select subscription</label>
-          <select id="subscription" class="form-control" ngModel name="subscribtion">
-            <option *ngFor="let subscription of subscriptions"> {{ subscription }} </option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label for="password"></label>
-          <input id="password" type="password" class="form-control" placeholder="Create a new password for your account" ngModel name="password">
-        </div>
-
-        <button class="btn btn-primary" [disabled]>Subscribe</button>
+          <button
+            class="btn btn-primary"
+            type="submit"
+            [disabled]="!subscriptionForm.valid || !!submittedValues"
+          >
+            Subscribe
+          </button>
+        </fieldset>
       </form>
+    </div>
+  </div>
+  <div
+    class="row"
+    *ngIf="!!submittedValues"
+  >
+    <br>
+
+    <div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <h4>Submitted Values</h4>
+      <p>Email: {{submittedValues[FieldName.EMAIL]}}</p>
+      <p>Subscription: {{submittedValues[FieldName.SUBSCRIPTION]}}</p>
+      <p>Password: {{submittedValues[FieldName.PASSWORD]}}</p>
+      <br>
+      <button
+        class="btn btn-primary"
+        (click)="resetSubmission()"
+      >
+        Reset
+      </button>
     </div>
   </div>
 </div>
